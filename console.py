@@ -20,5 +20,4 @@ class CommandLine(cmd.Cmd):
 
 
 if __name__ == "__main__":
-    print(dir(cmd.Cmd))
     CommandLine().cmdloop()

@@ -24,12 +24,13 @@ class CommandLine(cmd.Cmd):
 
     def precmd(self, line):
         return line.strip()
-    
+
     def postcmd(self, stop, line):
         if not self.is_interactive:
             print("")
             print("(hbnb)")
         return stop
+
 
 if __name__ == "__main__":
     if len(sys.argv) > 1:

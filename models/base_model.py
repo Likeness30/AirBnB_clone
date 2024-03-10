@@ -3,6 +3,8 @@
 from uuid import uuid4
 import datetime
 from models.__init__ import storage
+
+
 class BaseModel:
     """BaseModel"""
 
@@ -12,7 +14,11 @@ class BaseModel:
             for key, value in kwargs.items():
                 if key != '__class__':
                     if key == 'created_at' or key == 'updated_at':
-                        setattr(self, key, datetime.datetime.strptime(value, '%Y-%m-%dT%H:%M:%S.%f'))
+                        keY_val = '%Y-%m-%dT%H:%M:%S.%f'
+                        setattr(
+                            self, key,
+                            datetime.datetime.strptime(value, keY_val)
+                        )
                     else:
                         setattr(self, key, value)
         else:
@@ -22,25 +28,28 @@ class BaseModel:
             self.created_at = datetime.datetime.now().isoformat()
             self.updated_at = self.created_at
 
-
     def __str__(self):
         """Returns official string representation"""
-        return "[{}] ({}) {}".format(type(self).__name__, self.id, self.__dict__)
+        str_val = "[{}] ({}) {}"
+        return str_val.format(type(self).__name__, self.id, self.__dict__)
 
     def save(self):
-        """update the public instace attribute updated_at with the current datetime"""
+        """update the public instace attribute
+        updated_at with the current datetime
+        """
         self.updated_at = datetime.datetime.now().isoformat()
         storage.save(self)
 
     def to_dict(self):
-        """ returns a dictionary containing all keys/values of __dict__ of the instance"""
-        return (
-            {
-                'my_number': self.my_number,
-                'name': self.name,
-                '__class__': self.__class__.__name__,
-                'updated_at': self.updated_at,
-                'id': self.id,
-                'created_at': self.created_at
-            }
-        )
+        """
+        returns a dictionary containing all
+        keys values of __dict__ of the instance
+        """
+        return {
+            'my_number': self.my_number,
+            'name': self.name,
+            '__class__': self.__class__.__name__,
+            'updated_at': self.updated_at,
+            'id': self.id,
+            'created_at': self.created_at
+        }

@@ -3,7 +3,7 @@ import cmd
 import sys
 
 
-class CommandLine(cmd.Cmd):
+class HBNBCommand(cmd.Cmd):
     """A simple Command interpreter"""
 
     def __init__(self, interactive=True):
@@ -33,9 +33,4 @@ class CommandLine(cmd.Cmd):
 
 
 if __name__ == "__main__":
-    if len(sys.argv) > 1:
-        command_line = CommandLine()
-        for arg in sys.argv[1:]:
-            command_line.onecmd(arg)
-    else:
-        CommandLine().cmdloop()
+    HBNBCommand().cmdloop()

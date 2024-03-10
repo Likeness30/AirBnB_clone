@@ -1,14 +1,17 @@
 #!/usr/bin/python3
 """This module defines the BaseModel class"""
-
-import uuid
-from datetime import datetime
+<<<<<<< Updated upstream
 from models import storage
+from uuid import uuid4
+import datetime
 
 
+=======
+from uuid import uuid4
+import datetime
+>>>>>>> Stashed changes
 class BaseModel:
-
-    """Class from which all other classes will inherit"""
+    """BaseModel"""
 
     def __init__(self, *args, **kwargs):
         """Initializes instance attributes
@@ -49,8 +52,30 @@ class BaseModel:
     def to_dict(self):
         """returns a dictionary containing all keys/values of __dict__"""
 
+<<<<<<< Updated upstream
         my_dict = self.__dict__.copy()
         my_dict["__class__"] = type(self).__name__
         my_dict["created_at"] = my_dict["created_at"].isoformat()
         my_dict["updated_at"] = my_dict["updated_at"].isoformat()
         return my_dict
+=======
+>>>>>>> Stashed changes
+    def __init__(self, id=None):
+        self.id = str(uuid4())
+        self.created_at = datetime.datetime.now().isoformat()
+        self.updated_at = self.created_at
+        
+    def save(self):
+        """update the public instace attribute updated_at with the current datetime"""
+        self.updated_at = datetime.datetime.now().isoformat()
+    
+    def to_dict(self):
+        """ returns a dictionary containing all keys/values of __dict__ of the instance"""
+        return (
+            {
+                '__class__': self.__class__.__name__,
+                'created_at': self.created_at,
+                'updated_at': self.updated_at,
+                'id': self.id
+            }
+        )

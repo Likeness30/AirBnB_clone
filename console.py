@@ -7,6 +7,7 @@ import sys
 class HBNBCommand(cmd.Cmd):
     """A simple Command interpreter"""
 
+    prompt = "(hbnb) "
     def do_quit(self, args):
         """Exits the cmd"""
         return (True)
@@ -17,6 +18,9 @@ class HBNBCommand(cmd.Cmd):
 
     def emptyline(self):
         pass
+
+    def precmd(self, line):
+        return line.strip()
 
 
 if __name__ == "__main__":

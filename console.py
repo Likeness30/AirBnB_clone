@@ -13,7 +13,7 @@ class HBNBCommand(cmd.Cmd):
 
     def do_quit(self, args):
         """Exits the cmd"""
-        return True
+        quit()
 
     def do_EOF(self, args):
         """EOF"""
@@ -116,6 +116,60 @@ class HBNBCommand(cmd.Cmd):
             return
         setattr(objects[key], arg_list[2], arg_list[3])
         storage.save()
+
+    def do_create_user(self, args):
+        """Create a new user"""
+        user_args = self.parse_arguments(args)
+        if user_args:
+            new_user = User(**user_args)
+            new_user.save()
+            print(new_user.id)
+
+    def do_show_user(self, args):
+        """Show user information"""
+        user_id = args.strip()
+        if user_id:
+            user = storage.get(User, user_id)
+            if user:
+                print(user)
+            else:
+                print("** no instance found **")
+
+    def do_destroy_user(self, args):
+        """Delete a user"""
+        user_id = args.strip()
+        if user_id:
+            user = storage.get(User, user_id)
+            if user:
+                user.delete()
+                storage.save()
+            else:
+                print("** no instance found **")
+
+    def do_update_user(self, args):
+        """Update user information"""
+        user_args = self.parse_arguments(args)
+        if user_args:
+            user_id = user_args.pop("id", None)
+            if user_id:
+                user = storage.get(User, user_id)
+                if user:
+                    for attr, value in user_args.items():
+                        setattr(user, attr, value)
+                    user.save()
+                else:
+                    print("** no instance found **")
+            else:
+                print("** instance id missing **")
+
+    def do_all_users(self, args):
+        """List all users"""
+        users = storage.all(User).values()
+        if users:
+            for user in users:
+                print(user)
+        else:
+            print("** no users found **")
 
 
 if __name__ == "__main__":

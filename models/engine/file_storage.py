@@ -2,6 +2,7 @@
 """This module defines the BaseModel class"""
 import os.path
 import json
+from models.base_model import BaseModel
 
 
 class FileStorage:
@@ -11,29 +12,44 @@ class FileStorage:
     __file_path = "file.json"
     __objects = {}
 
+    def __init__(self):
+        """Instantiate the class"""
+        self.__models_available = {"BaseModel": BaseModel}
+        self.reload()
+
     def all(self):
         """ returns the dictionary __objects"""
         return (self.__objects)
 
     def new(self, obj):
         """sets in __objects the obj with key <obj class name>.id"""
-        key = "{}.{}".format(obj.__class__.__name__, obj.id)
-        self.__objects[key] = obj
+        if obj is not None:
+            key = "{}.{}".format(obj.__class__.__name__, obj.id)
+            self.__objects[key] = obj
 
-    def save(self, obj):
-        """ serializes __objects to the JSON file (path: __file_path)"""
-        self.__objects[obj.__class__.__name__ + '.' + obj.id] = obj
-        serialized_objects = {key: obj.to_dict() for key,
-                              obj in self.__objects.items()}
-        with open(self.__file_path, "w") as file:
-            json.dump(serialized_objects, file)
+    def save(self):
+        """puts all the object to file after serializing them"""
+        store = {}
+        for k in FileStorage.__objects.keys():
+            store[k] = FileStorage.__objects[k].to_dict()
+        with open(FileStorage.__file_path, mode="w+", encoding="utf-8") as fd:
+            fd.write(json.dumps(store))
 
     def reload(self):
-        """Deserializes the JSON file to __objects."""
-        if os.path.isfile(self.__file_path):
-            with open(self.__file_path, "r") as file:
-                serialized_objects = json.load(file)
-                for key, value in serialized_objects.items():
-                    class_name, obj_id = key.split(".")
-                    obj = globals()[class_name](**value)
-                    self.__objects[key] = obj
+        """
+        Restart from what is saved on file
+        All errors will be silently skipped
+        """
+        FileStorage.__objects = {}
+        try:
+            with open(FileStorage.__file_path,
+                      mode="r+", encoding="utf-8") as fd:
+                temp = json.load(fd)
+        except Exception as e:
+            return
+        for k in temp.keys():
+            cls = temp[k].pop("__class__", None)
+            if cls not in self.__models_available.keys():
+                continue
+            # call a good init function
+            FileStorage.__objects[k] = self.__models_available[cls](**temp[k])

@@ -169,7 +169,7 @@ class HBNBCommand(cmd.Cmd):
                 return
             else:
                 for instance in storage.all(ClassName).values():
-                    print(instance)
+                        print(instance)
 
     def do_update(self, args):
         """
